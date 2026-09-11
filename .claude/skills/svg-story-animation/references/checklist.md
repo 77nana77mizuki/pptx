@@ -7,6 +7,7 @@ supermemoryai/skills の `svg-animations`（MIT License）が挙げるベスト�
 - [ ] アニメーションを止めて最終フレームだけを見せても、伝えたい結論が伝わるか（＝アニメーションが情報を隠していないか）
 - [ ] 同時に動いている要素は3〜4個以内か
 - [ ] 1つのアニメーションが1つの仕組み（収束／パルス／変換／循環／成長／分岐／進行）を表しているか。複数の仕組みを1つの図に詰め込んでいないか
+- [ ] 同一デッキ内で同じ番号の視覚パターン（storytelling-patterns.md）を3回以上使い回していないか。使っていたら「概念→パターン早見表」から別の視覚語彙に切り替えたか
 
 ## 技術的な健全性
 
@@ -15,6 +16,8 @@ supermemoryai/skills の `svg-animations`（MIT License）が挙げるベスト�
 - [ ] シェイプモーフィングをしている場合、変形前後の `d` のコマンド数・種類・順序が一致しているか
 - [ ] 複数のSVGを同一HTML内にインライン埋め込みしている場合、`<style>` 内のクラス名や `id` が衝突していないか（別々の素材から来たSVGは、クラス名・idに接頭辞を付けて名前空間を分離する）
 - [ ] `transform` / `opacity` 中心のアニメーションになっているか（頻繁な `x`/`y`/`width`/`height` の直接アニメーションを避けられているか）
+- [ ] フィルタ（`feGaussianBlur`/`feTurbulence`/`feDisplacementMap`）を使っている場合、`stdDeviation`や`baseFrequency`など重い属性を毎フレーム変化させていないか（発光やノイズは静的にし、動かすのは`opacity`/`transform`側にできているか）
+- [ ] 外部ライブラリを使った場合、CDN参照ではなく単一HTML内にソースをインライン化しているか（[references/library-escape-hatch.md](library-escape-hatch.md)の条件に該当する場合のみ導入しているか）
 
 ## アクセシビリティ
 

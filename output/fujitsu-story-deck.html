@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>富士通株式会社 ― 会社概要・沿革・事業の全体像</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#1a1a1a;
+  --ink-soft:#5b6570;
+  --paper:#ffffff;
+  --paper-tint:#f6f4f3;
+  --red:#e6002d;
+  --red-deep:#a3001f;
+  --red-tint:#fdecef;
+  --teal:#00838f;
+  --gold:#e8a33d;
+  --line:#e2ddd9;
+  --charcoal:#171414;
+  --font-jp:"Noto Sans JP","Hiragino Sans","Yu Gothic",sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{width:100%;height:100%;overflow:hidden;background:var(--charcoal);font-family:var(--font-jp);color:var(--ink);}
+button{font-family:var(--font-jp);}
+
+.deck-viewport{position:fixed;inset:0;overflow:hidden;background:var(--charcoal);}
+.stage{position:absolute;left:0;top:0;width:1600px;height:900px;transform-origin:0 0;overflow:hidden;background:var(--paper);}
+.slide{position:absolute;inset:0;width:1600px;height:900px;overflow:hidden;visibility:hidden;opacity:0;pointer-events:none;background:var(--paper);transition:opacity .55s ease;}
+.slide.active{visibility:visible;opacity:1;pointer-events:auto;z-index:1;}
+.slide-inner{position:absolute;inset:0;display:flex;}
+
+.panel-text{width:560px;flex:0 0 560px;padding:88px 56px 88px 84px;display:flex;flex-direction:column;justify-content:center;gap:22px;position:relative;z-index:2;background:var(--paper);}
+.panel-visual{flex:1;position:relative;background:var(--paper-tint);}
+.panel-visual svg{position:absolute;inset:0;width:100%;height:100%;}
+
+.kicker{display:inline-flex;align-items:center;gap:10px;font-size:16px;font-weight:700;letter-spacing:.14em;color:var(--red);}
+.kicker .num{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;background:var(--red);color:#fff;font-size:14px;font-weight:700;}
+.kicker .bar{width:34px;height:3px;background:var(--gold);border-radius:2px;}
+
+h2.title{font-size:38px;line-height:1.46;font-weight:900;color:var(--ink);letter-spacing:.01em;}
+p.lead{font-size:17px;line-height:1.9;color:var(--ink-soft);font-weight:500;max-width:460px;}
+p.note{font-size:13px;line-height:1.8;color:var(--ink-soft);opacity:.85;max-width:460px;}
+
+.tag-row{display:flex;gap:9px;flex-wrap:wrap;margin-top:2px;}
+.tag{font-size:12.5px;font-weight:700;color:var(--red-deep);background:var(--red-tint);border:1px solid var(--line);border-radius:999px;padding:6px 13px;letter-spacing:.02em;}
+
+.deck-chrome{position:fixed;left:50%;bottom:26px;transform:translateX(-50%);display:flex;align-items:center;gap:18px;z-index:1000;background:rgba(23,20,20,.76);backdrop-filter:blur(6px);border-radius:999px;padding:10px 20px;box-shadow:0 8px 30px rgba(0,0,0,.3);}
+.deck-chrome button{width:36px;height:36px;border-radius:50%;border:none;cursor:pointer;background:rgba(255,255,255,.14);color:#fff;font-size:16px;display:flex;align-items:center;justify-content:center;transition:background .2s ease,color .2s ease;}
+.deck-chrome button:hover{background:var(--gold);color:var(--charcoal);}
+.deck-chrome button:disabled{opacity:.35;cursor:default;}
+.deck-chrome button:disabled:hover{background:rgba(255,255,255,.14);color:#fff;}
+.progress{width:220px;height:5px;border-radius:999px;background:rgba(255,255,255,.22);overflow:hidden;}
+.progress-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--teal),var(--gold));transition:width .4s ease;}
+#pageNum{color:#fff;font-size:14px;font-weight:700;letter-spacing:.04em;min-width:56px;text-align:center;}
+
+.slide-inner.full{display:block;}
+.slide-inner.full .panel-visual{position:absolute;inset:0;background:var(--paper);}
+.slide-inner.full .overlay-text{position:absolute;left:0;bottom:0;padding:0 90px 96px;z-index:3;display:flex;flex-direction:column;gap:18px;max-width:920px;}
+.slide-inner.full .overlay-text.center-top{top:0;bottom:auto;padding:104px 90px 0;}
+
+.eyebrow{font-size:15px;font-weight:700;letter-spacing:.26em;color:var(--red);}
+h1.cover-title{font-size:84px;font-weight:900;color:var(--ink);letter-spacing:.03em;line-height:1.05;}
+p.cover-sub{font-size:20px;color:var(--ink-soft);font-weight:500;line-height:1.75;max-width:660px;}
+
+.chip-bg{fill:#ffffff;stroke:var(--line);stroke-width:1.5;}
+.chip-text{fill:var(--red-deep);font-size:17px;font-weight:700;font-family:var(--font-jp);}
+.node-core{fill:var(--red);}
+.node-core.teal{fill:var(--teal);}
+.node-core.gold{fill:var(--gold);}
+.hairline{stroke:var(--line);stroke-width:2;fill:none;}
+.pathline{stroke:var(--red-deep);stroke-width:3;fill:none;stroke-linecap:round;}
+.pathline.teal{stroke:var(--teal);stroke-width:3;fill:none;stroke-linecap:round;}
+.label-text{fill:var(--red-deep);font-size:18px;font-weight:700;font-family:var(--font-jp);}
+.label-text.dark{fill:var(--ink);}
+.label-sub{fill:var(--ink-soft);font-size:14px;font-weight:500;font-family:var(--font-jp);}
+
+.sources{font-size:13px;color:var(--ink-soft);line-height:1.85;}
+.sources b{color:var(--ink);}
+
+@media (prefers-reduced-motion: reduce){
+  svg animate, svg animateTransform, svg animateMotion{animation-play-state:paused;}
+}
+</style>
+</head>
+<body>
+
+<div class="deck-viewport">
+  <div class="stage" id="stage">
+
+    <!-- 0 : 表紙 -->
+    <section class="slide active" data-idx="0">
+      <div class="slide-inner full">
+        <div class="panel-visual">
+          <svg viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+            <defs>
+              <radialGradient id="coverGlow" cx="62%" cy="46%" r="60%">
+                <stop offset="0%" stop-color="#fdf1ee"/>
+                <stop offset="100%" stop-color="#ffffff"/>
+              </radialGradient>
+            </defs>
+            <rect x="0" y="0" width="1600" height="900" fill="url(#coverGlow)"/>
+            <g opacity="0.9">
+              <path id="cvA" class="hairline" d="M 120,110 C 380,180 620,280 940,430"/>
+              <path id="cvB" class="hairline" d="M 1480,140 C 1200,220 1020,300 950,420"/>
+              <path id="cvC" class="hairline" d="M 150,760 C 420,660 680,540 930,450"/>
+              <path id="cvD" class="hairline" d="M 1460,780 C 1220,660 1040,560 960,460"/>
+              <path id="cvE" class="hairline" d="M 940,90 C 940,220 940,330 950,420"/>
+              <path id="cvF" class="hairline" d="M 940,830 C 940,690 940,560 950,470"/>
+            </g>
+            <g>
+              <circle r="9" class="node-core"><animateMotion dur="3.4s" begin="0s" repeatCount="indefinite" calcMode="spline" keySplines="0.3 0 0.6 1" keyPoints="0;1" keyTimes="0;1"><mpath href="#cvA"/></animateMotion></circle>
+              <circle r="9" class="node-core gold"><animateMotion dur="3.4s" begin="0.5s" repeatCount="indefinite" calcMode="spline" keySplines="0.3 0 0.6 1" keyPoints="0;1" keyTimes="0;1"><mpath href="#cvB"/></animateMotion></circle>
+              <circle r="9" class="node-core teal"><animateMotion dur="3.4s" begin="1s" repeatCount="indefinite" calcMode="spline" keySplines="0.3 0 0.6 1" keyPoints="0;1" keyTimes="0;1"><mpath href="#cvC"/></animateMotion></circle>
+              <circle r="9" class="node-core"><animateMotion dur="3.4s" begin="1.5s" repeatCount="indefinite" calcMode="spline" keySplines="0.3 0 0.6 1" keyPoints="0;1" keyTimes="0;1"><mpath href="#cvD"/></animateMotion></circle>
+              <circle r="8" class="node-core gold"><animateMotion dur="3.4s" begin="0.25s" repeatCount="indefinite" calcMode="spline" keySplines="0.3 0 0.6 1" keyPoints="0;1" keyTimes="0;1"><mpath href="#cvE"/></animateMotion></circle>
+              <circle r="8" class="node-core teal"><animateMotion dur="3.4s" begin="0.75s" repeatCount="indefinite" calcMode="spline" keySplines="0.3 0 0.6 1" keyPoints="0;1" keyTimes="0;1"><mpath href="#cvF"/></animateMotion></circle>
+            </g>
+            <g transform="translate(950,460)">
+              <ellipse cx="0" cy="0" rx="150" ry="96" fill="none" stroke="var(--red)" stroke-width="7" stroke-dasharray="800" stroke-dashoffset="800">
+                <animate attributeName="stroke-dashoffset" values="800;0;0;800" keyTimes="0;0.45;0.85;1" dur="6.8s" repeatCount="indefinite"/>
+              </ellipse>
+              <ellipse cx="0" cy="0" rx="88" ry="40" fill="none" stroke="var(--teal)" stroke-width="6" stroke-dasharray="420" stroke-dashoffset="420">
+                <animate attributeName="stroke-dashoffset" values="420;0;0;420" keyTimes="0;0.5;0.9;1" dur="6.8s" begin="0.3s" repeatCount="indefinite"/>
+              </ellipse>
+              <circle r="11" fill="var(--gold)"><animate attributeName="r" values="9;15;9" dur="2.2s" repeatCount="indefinite"/></circle>
+            </g>
+          </svg>
+        </div>
+        <div class="overlay-text">
+          <div class="eyebrow">FUJITSU LIMITED ― CORPORATE OVERVIEW</div>
+          <h1 class="cover-title">富士通</h1>
+          <p class="cover-sub">通信機メーカーとして生まれ、90年をかけてテクノロジー企業へと自らを作り替えてきた。<br>会社概要・沿革・事業の全体像をたどる。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 1 : 会社概要 -->
+    <section class="slide" data-idx="1">
+      <div class="slide-inner">
+        <div class="panel-text">
+          <div class="kicker"><span class="num">01</span>会社概要<span class="bar"></span></div>
+          <h2 class="title">川崎に本社を置き、従業員9.9万人・<br>売上3兆5,501億円の企業に育った</h2>
+          <p class="lead">1935年に通信機メーカーとして出発した富士通は、いまや情報通信技術を軸に売上3兆円を超える企業になっている。まず基本情報を数字で押さえる。</p>
+          <div class="tag-row">
+            <span class="tag">設立 1935年6月20日</span><span class="tag">証券コード 6702</span><span class="tag">代表者 時田隆仁</span>
+          </div>
+        </div>
+        <div class="panel-visual">
+          <svg viewBox="0 0 1040 900" aria-hidden="true">
+            <path id="p1a" class="hairline" d="M 80,120 C 260,190 440,280 610,410"/>
+            <path id="p1b" class="hairline" d="M 970,140 C 780,220 660,300 630,410"/>
+            <path id="p1c" class="hairline" d="M 70,480 C 250,450 460,440 620,440"/>
+            <path id="p1d" class="hairline" d="M 980,510 C 800,480 660,460 630,450"/>
+            <path id="p1e" class="hairline" d="M 620,90 C 620,220 620,320 625,405"/>
+            <path id="p1f" class="hairline" d="M 480,750 C 550,670 600,570 620,470"/>
+            <g font-size="18" font-weight="700" fill="var(--red-deep)" font-family="var(--font-jp)">
+              <text x="40" y="100">設立 1935年6月20日</text>
+              <text x="700" y="90">売上収益 3兆5,501億円</text>
+              <text x="30" y="510">資本金 3,256億円</text>
+              <text x="740" y="540">従業員(連結) 99,203名</text>
+              <text x="420" y="70">本社 川崎市中原区</text>
+              <text x="340" y="775">代表者 時田隆仁</text>
+            </g>
+            <circle r="7" class="node-core"><animateMotion dur="3s" begin="0s" repeatCount="indefinite" calcMode="spline" keySplines="0.3 0 0.7 1" keyPoints="0;1" keyTimes="0;1"><mpath href="#p1a"/></animateMotion></circle>
+            <circle r="7" class="node-core gold"><animateMotion dur="3s" begin="0.4s" repeatCount="indefinite" calcMode="spline" keySplines="0.3 0 0.7 1" keyPoints="0;1" keyTimes="0;1"><mpath href="#p1b"/></animateMotion></circle>
+            <circle r="7" class="node-core teal"><animateMotion dur="3s" begin="0.8s" repeatCount="indefinite" calcMode="spline" keySplines="0.3 0 0.7 1" keyPoints="0;1" keyTimes="0;1"><mpath href="#p1c"/></animateMotion></circle>
+            <circle r="7" class="node-core"><animateMotion dur="3s" begin="1.2s" repeatCount="indefinite" calcMode="spline" keySplines="0.3 0 0.7 1" keyPoints="0;1" keyTimes="0;1"><mpath href="#p1d"/></animateMotion></circle>
+            <circle r="7" class="node-core gold"><animateMotion dur="3s" begin="1.6s" repeatCount="indefinite" calcMode="spline" keySplines="0.3 0 0.7 1" keyPoints="0;1" keyTimes="0;1"><mpath href="#p1e"/></animateMotion></circle>
+            <circle r="7" class="node-core teal"><animateMotion dur="3s" begin="2s" repeatCount="indefinite" calcMode="spline" keySplines="0.3 0 0.7 1" keyPoints="0;1" keyTimes="0;1"><mpath href="#p1f"/></animateMotion></circle>
+            <g transform="translate(620,430)">
+              <circle r="20" fill="none" stroke="var(--red)" stroke-width="4"/>
+              <circle r="20" fill="var(--red)" opacity="0.15">
+                <animate attributeName="r" values="20;42;20" dur="3s" repeatCount="indefinite"/>
+                <animate attributeName="opacity" values="0.25;0;0.25" dur="3s" repeatCount="indefinite"/>
+              </circle>
+              <circle r="9" fill="var(--gold)"/>
+              <text y="46" text-anchor="middle" font-size="19" font-weight="900" fill="var(--ink)" font-family="var(--font-jp)">富士通</text>
+            </g>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2 : 沿革(1) -->
+    <section class="slide" data-idx="2">
+      <div class="slide-inner">
+        <div class="panel-text">
+          <div class="kicker"><span class="num">02</span>沿革<span class="bar"></span></div>
+          <h2 class="title">通信機メーカーとして生まれ、<br>コンピュータの会社へ舵を切った</h2>
+          <p class="lead">1935年、富士電機製造の電話部門を分離する形で「富士通信機製造株式会社」として設立された。1950年代末に社長へ就任した岡田完二郎は「通信とコンピュータはいずれ一体になる」と読み、1962年に経営の重心をコンピュータへ移す方針を打ち出した。</p>
+        </div>
+        <div class="panel-visual">
+          <svg viewBox="0 0 1040 900" aria-hidden="true">
+            <path id="road2" class="hairline" stroke-width="4" d="M 90,500 L 320,500 L 550,500 L 780,500 L 960,500"/>
+            <g font-size="15" font-weight="700" fill="var(--ink-soft)" font-family="var(--font-jp)">
+              <text x="76" y="560" text-anchor="middle">1935</text>
+              <text x="320" y="440" text-anchor="middle">1954</text>
+              <text x="550" y="560" text-anchor="middle">1962</text>
+              <text x="780" y="440" text-anchor="middle">1980</text>
+            </g>
+            <g font-size="16" font-weight="700" fill="var(--red-deep)" font-family="var(--font-jp)">
+              <text x="76" y="585" text-anchor="middle">設立</text>
+              <text x="320" y="410" text-anchor="middle">国産初の</text>
+              <text x="320" y="390" text-anchor="middle">リレー式計算機</text>
+              <text x="550" y="585" text-anchor="middle">「コンピュータに</text>
+              <text x="550" y="605" text-anchor="middle">社運を賭ける」方針</text>
+              <text x="780" y="410" text-anchor="middle">国内コンピュータ</text>
+              <text x="780" y="390" text-anchor="middle">売上高トップに</text>
+            </g>
+            <circle cx="90" cy="500" r="9" fill="var(--red)"/>
+            <circle cx="320" cy="500" r="9" fill="var(--red)"/>
+            <circle cx="550" cy="500" r="9" fill="var(--red)"/>
+            <circle cx="780" cy="500" r="9" fill="var(--red)"/>
+            <circle r="13" fill="var(--gold)" stroke="#fff" stroke-width="2">
+              <animateMotion dur="6s" repeatCount="indefinite" calcMode="linear"
+                keyPoints="0;0;0.33;0.33;0.66;0.66;1;1"
+                keyTimes="0;0.14;0.35;0.49;0.68;0.82;0.97;1">
+                <mpath href="#road2"/>
+              </animateMotion>
+            </circle>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3 : 沿革(2) 研究開発と富岳 -->
+    <section class="slide" data-idx="3">
+      <div class="slide-inner">
+        <div class="panel-text">
+          <div class="kicker"><span class="num">03</span>沿革<span class="bar"></span></div>
+          <h2 class="title">研究所を軸にした技術投資が、<br>スーパーコンピュータ「富岳」に結実した</h2>
+          <p class="lead">1968年に富士通研究所を分社化し、基礎研究に人材と資金を集中させる体制を築いた。研究所は2021年に本体へ再統合されたが、その間に積み重ねた計算機科学の蓄積は、理化学研究所と共同開発したスーパーコンピュータ「富岳」で性能世界4冠という結果につながった。</p>
+          <div class="tag-row">
+            <span class="tag">1968 富士通研究所を分社化</span><span class="tag">2021年3月 富岳完成</span><span class="tag">2021年 研究所を本体へ統合</span>
+          </div>
+        </div>
+        <div class="panel-visual">
+          <svg viewBox="0 0 1040 900" aria-hidden="true">
+            <path id="r3a" class="hairline" d="M 90,180 C 280,230 440,320 600,440"/>
+            <path id="r3b" class="hairline" d="M 90,470 C 280,470 440,460 600,455"/>
+            <path id="r3c" class="hairline" d="M 90,760 C 280,690 440,560 600,470"/>
+            <g font-size="17" font-weight="700" fill="var(--red-deep)" font-family="var(--font-jp)">
+              <text x="40" y="150">半導体技術</text>
+              <text x="40" y="450">ソフトウェア技術</text>
+              <text x="40" y="800">ネットワーク技術</text>
+            </g>
+            <circle r="7" class="node-core"><animateMotion dur="3.2s" begin="0s" repeatCount="indefinite" calcMode="spline" keySplines="0.3 0 0.7 1" keyPoints="0;1" keyTimes="0;1"><mpath href="#r3a"/></animateMotion></circle>
+            <circle r="7" class="node-core teal"><animateMotion dur="3.2s" begin="0.5s" repeatCount="indefinite" calcMode="spline" keySplines="0.3 0 0.7 1" keyPoints="0;1" keyTimes="0;1"><mpath href="#r3b"/></animateMotion></circle>
+            <circle r="7" class="node-core gold"><animateMotion dur="3.2s" begin="1s" repeatCount="indefinite" calcMode="spline" keySplines="0.3 0 0.7 1" keyPoints="0;1" keyTimes="0;1"><mpath href="#r3c"/></animateMotion></circle>
+            <g transform="translate(650,460)">
+              <rect x="-70" y="-70" width="140" height="140" rx="18" fill="none" stroke="var(--red)" stroke-width="5" stroke-dasharray="560" stroke-dashoffset="560">
+                <animate attributeName="stroke-dashoffset" values="560;0;0;560" keyTimes="0;0.45;0.85;1" dur="6.4s" repeatCount="indefinite"/>
+              </rect>
+              <circle r="11" fill="var(--gold)"><animate attributeName="r" values="9;15;9" dur="2.2s" repeatCount="indefinite"/></circle>
+              <text y="105" text-anchor="middle" font-size="22" font-weight="900" fill="var(--ink)" font-family="var(--font-jp)">富岳</text>
+              <text y="130" text-anchor="middle" font-size="14" font-weight="700" fill="var(--ink-soft)" font-family="var(--font-jp)">性能世界4冠</text>
+            </g>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4 : 存在意義(パーパス) -->
+    <section class="slide" data-idx="4">
+      <div class="slide-inner">
+        <div class="panel-text">
+          <div class="kicker"><span class="num">04</span>存在意義<span class="bar"></span></div>
+          <h2 class="title">「イノベーションで信頼をもたらし、<br>世界を持続可能にする」を存在意義に掲げる</h2>
+          <p class="lead">富士通は自社の存在意義を「イノベーションによって社会に信頼をもたらし、世界をより持続可能にしていくこと」と定義している。挑戦・信頼・共感という3つの価値観を、経営判断の基準に置く。</p>
+        </div>
+        <div class="panel-visual">
+          <svg viewBox="0 0 1040 900" aria-hidden="true">
+            <circle cx="520" cy="450" r="230" fill="none" class="hairline"/>
+            <path id="ringPath4" d="M 750,450 A 230,230 0 1,1 290,450 A 230,230 0 1,1 750,450" fill="none" stroke="none"/>
+            <g font-size="19" font-weight="900" fill="var(--red-deep)" font-family="var(--font-jp)">
+              <text x="520" y="205" text-anchor="middle">挑戦</text>
+              <text x="270" y="620" text-anchor="middle">信頼</text>
+              <text x="770" y="620" text-anchor="middle">共感</text>
+            </g>
+            <circle cx="520" cy="220" r="10" fill="var(--red)"/>
+            <circle cx="290" cy="600" r="10" fill="var(--teal)"/>
+            <circle cx="750" cy="600" r="10" fill="var(--gold)"/>
+            <circle r="13" fill="var(--red)" stroke="#fff" stroke-width="2">
+              <animateMotion dur="7s" repeatCount="indefinite" rotate="auto">
+                <mpath href="#ringPath4"/>
+              </animateMotion>
+            </circle>
+            <g transform="translate(520,450)" text-anchor="middle" font-family="var(--font-jp)">
+              <text y="-14" font-size="15" font-weight="700" fill="var(--ink-soft)">Our Purpose</text>
+              <text y="14" font-size="15" font-weight="700" fill="var(--ink)">イノベーションによって</text>
+              <text y="36" font-size="15" font-weight="700" fill="var(--ink)">社会に信頼をもたらし、</text>
+              <text y="58" font-size="15" font-weight="700" fill="var(--ink)">世界をより持続可能に</text>
+            </g>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5 : 事業構造の転換 -->
+    <section class="slide" data-idx="5">
+      <div class="slide-inner">
+        <div class="panel-text">
+          <div class="kicker"><span class="num">05</span>事業構造<span class="bar"></span></div>
+          <h2 class="title">製品を売り切る事業から、<br>課題解決で稼ぐ事業へ組み替えた</h2>
+          <p class="lead">かつての富士通は、通信機器やコンピュータ、携帯電話といったハードウェアの開発・販売が事業の中心だった。2021年5月、その構造を「Fujitsu Uvance」という一つの事業ブランドへ転換し、業種を超えた社会課題の解決から収益を生む形へ組み替えた。</p>
+        </div>
+        <div class="panel-visual">
+          <svg viewBox="0 0 1040 900" aria-hidden="true">
+            <g font-size="15" font-weight="700" fill="var(--ink-soft)" font-family="var(--font-jp)">
+              <text x="70" y="240">通信機器</text>
+              <text x="70" y="330">コンピュータ</text>
+              <text x="70" y="420">携帯電話</text>
+              <text x="70" y="510">半導体</text>
+            </g>
+            <g id="scatter5">
+              <rect x="180" y="215" width="16" height="16" fill="var(--ink-soft)"/>
+              <rect x="220" y="305" width="16" height="16" fill="var(--ink-soft)"/>
+              <rect x="170" y="395" width="16" height="16" fill="var(--ink-soft)"/>
+              <rect x="230" y="485" width="16" height="16" fill="var(--ink-soft)"/>
+              <animateTransform attributeName="transform" type="translate"
+                values="0 0; 300 65; 300 65" keyTimes="0;0.6;1" dur="3.6s" repeatCount="indefinite"/>
+            </g>
+            <path d="M 560,350 L 900,350" stroke="var(--red)" stroke-width="5"
+                  stroke-dasharray="340" stroke-dashoffset="340">
+              <animate attributeName="stroke-dashoffset" values="340;340;0" keyTimes="0;0.6;1"
+                dur="3.6s" repeatCount="indefinite"/>
+            </path>
+            <path d="M 878,335 L 902,350 L 878,365" fill="none" stroke="var(--red)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
+              <animate attributeName="opacity" values="0;0;1" keyTimes="0;0.6;1" dur="3.6s" repeatCount="indefinite"/>
+            </path>
+            <g opacity="0">
+              <animate attributeName="opacity" values="0;0;1" keyTimes="0;0.6;1" dur="3.6s" repeatCount="indefinite"/>
+              <rect x="620" y="400" width="200" height="56" rx="12" fill="var(--red-tint)" stroke="var(--red)" stroke-width="1.5"/>
+              <text x="720" y="435" text-anchor="middle" font-size="19" font-weight="900" fill="var(--red-deep)" font-family="var(--font-jp)">Uvance</text>
+            </g>
+            <text x="620" y="560" font-size="14" font-weight="700" fill="var(--ink-soft)" font-family="var(--font-jp)">社会課題の解決から収益を生む事業へ</text>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6 : Uvance 4つの重点領域 -->
+    <section class="slide" data-idx="6">
+      <div class="slide-inner">
+        <div class="panel-text">
+          <div class="kicker"><span class="num">06</span>Uvance<span class="bar"></span></div>
+          <h2 class="title">Uvanceは4つの重点領域で、<br>業種を超えた社会課題の解決を事業にする</h2>
+          <p class="lead">Fujitsu Uvanceは特定の業種にとどまらず、4つの重点領域を軸に事業を設計している。個々の製品ではなく「解くべき課題」を起点に置く点が、それまでの事業構造との違いになる。</p>
+        </div>
+        <div class="panel-visual">
+          <svg viewBox="0 0 1040 900" aria-hidden="true">
+            <g>
+              <path d="M 260,450 L 620,180" class="hairline" stroke-width="2" stroke-dasharray="420" stroke-dashoffset="420">
+                <animate attributeName="stroke-dashoffset" from="420" to="0" dur="1.1s" begin="0.2s" fill="freeze"/>
+              </path>
+              <rect x="620" y="140" width="330" height="70" rx="12" opacity="0" fill="var(--red-tint)" stroke="var(--red)" stroke-width="1.5">
+                <animate attributeName="opacity" from="0" to="1" dur="0.3s" begin="1.2s" fill="freeze"/>
+              </rect>
+              <text x="785" y="182" text-anchor="middle" opacity="0" font-size="16" font-weight="700" fill="var(--red-deep)" font-family="var(--font-jp)">Sustainable Manufacturing<animate attributeName="opacity" from="0" to="1" dur="0.3s" begin="1.2s" fill="freeze"/></text>
+            </g>
+            <g>
+              <path d="M 260,450 L 620,330" class="hairline" stroke-width="2" stroke-dasharray="380" stroke-dashoffset="380">
+                <animate attributeName="stroke-dashoffset" from="380" to="0" dur="1.1s" begin="0.6s" fill="freeze"/>
+              </path>
+              <rect x="620" y="298" width="290" height="60" rx="12" opacity="0" fill="var(--red-tint)" stroke="var(--red)" stroke-width="1.5">
+                <animate attributeName="opacity" from="0" to="1" dur="0.3s" begin="1.6s" fill="freeze"/>
+              </rect>
+              <text x="765" y="333" text-anchor="middle" opacity="0" font-size="16" font-weight="700" fill="var(--red-deep)" font-family="var(--font-jp)">Consumer Experience<animate attributeName="opacity" from="0" to="1" dur="0.3s" begin="1.6s" fill="freeze"/></text>
+            </g>
+            <g>
+              <path d="M 260,450 L 620,570" class="hairline" stroke-width="2" stroke-dasharray="380" stroke-dashoffset="380">
+                <animate attributeName="stroke-dashoffset" from="380" to="0" dur="1.1s" begin="1.0s" fill="freeze"/>
+              </path>
+              <rect x="620" y="538" width="260" height="60" rx="12" opacity="0" fill="var(--red-tint)" stroke="var(--red)" stroke-width="1.5">
+                <animate attributeName="opacity" from="0" to="1" dur="0.3s" begin="2.0s" fill="freeze"/>
+              </rect>
+              <text x="750" y="573" text-anchor="middle" opacity="0" font-size="16" font-weight="700" fill="var(--red-deep)" font-family="var(--font-jp)">Healthy Living<animate attributeName="opacity" from="0" to="1" dur="0.3s" begin="2.0s" fill="freeze"/></text>
+            </g>
+            <g>
+              <path d="M 260,450 L 620,720" class="hairline" stroke-width="2" stroke-dasharray="420" stroke-dashoffset="420">
+                <animate attributeName="stroke-dashoffset" from="420" to="0" dur="1.1s" begin="1.4s" fill="freeze"/>
+              </path>
+              <rect x="620" y="688" width="280" height="60" rx="12" opacity="0" fill="var(--red-tint)" stroke="var(--red)" stroke-width="1.5">
+                <animate attributeName="opacity" from="0" to="1" dur="0.3s" begin="2.4s" fill="freeze"/>
+              </rect>
+              <text x="760" y="723" text-anchor="middle" opacity="0" font-size="16" font-weight="700" fill="var(--red-deep)" font-family="var(--font-jp)">Trusted Society<animate attributeName="opacity" from="0" to="1" dur="0.3s" begin="2.4s" fill="freeze"/></text>
+            </g>
+            <circle cx="260" cy="450" r="38" fill="var(--red)"/>
+            <text x="260" y="456" text-anchor="middle" font-size="14" font-weight="900" fill="#fff" font-family="var(--font-jp)">Uvance</text>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7 : Uvance 3つの技術基盤 -->
+    <section class="slide" data-idx="7">
+      <div class="slide-inner">
+        <div class="panel-text">
+          <div class="kicker"><span class="num">07</span>Uvance<span class="bar"></span></div>
+          <h2 class="title">コンピューティング・ネットワーク・<br>AI/データ&セキュリティが4領域を下支えする</h2>
+          <p class="lead">4つの重点領域は、単独では機能しない。計算基盤・通信基盤・AI/データ&セキュリティという3つの技術基盤が業種を横断して供給されて初めて、課題解決型のサービスとして成立する。</p>
+        </div>
+        <div class="panel-visual">
+          <svg viewBox="0 0 1040 900" aria-hidden="true">
+            <rect x="200" y="260" width="640" height="70" rx="14" fill="var(--red-tint)" stroke="var(--red)" stroke-width="1.5"/>
+            <text x="520" y="303" text-anchor="middle" font-size="18" font-weight="900" fill="var(--red-deep)" font-family="var(--font-jp)">4つの重点領域（Vertical Areas）</text>
+            <g>
+              <rect x="260" y="340" width="70" height="260" fill="var(--red)" opacity="0.85">
+                <animate attributeName="height" values="0;260" dur="1.4s" begin="0.1s" fill="freeze"/>
+                <animate attributeName="y" values="600;340" dur="1.4s" begin="0.1s" fill="freeze"/>
+              </rect>
+              <text x="295" y="640" text-anchor="middle" font-size="15" font-weight="700" fill="var(--ink)" font-family="var(--font-jp)">Computing</text>
+            </g>
+            <g>
+              <rect x="485" y="340" width="70" height="260" fill="var(--teal)" opacity="0.85">
+                <animate attributeName="height" values="0;260" dur="1.4s" begin="0.4s" fill="freeze"/>
+                <animate attributeName="y" values="600;340" dur="1.4s" begin="0.4s" fill="freeze"/>
+              </rect>
+              <text x="520" y="640" text-anchor="middle" font-size="15" font-weight="700" fill="var(--ink)" font-family="var(--font-jp)">Network</text>
+            </g>
+            <g>
+              <rect x="710" y="340" width="70" height="260" fill="var(--gold)" opacity="0.9">
+                <animate attributeName="height" values="0;260" dur="1.4s" begin="0.7s" fill="freeze"/>
+                <animate attributeName="y" values="600;340" dur="1.4s" begin="0.7s" fill="freeze"/>
+              </rect>
+              <text x="745" y="640" text-anchor="middle" font-size="15" font-weight="700" fill="var(--ink)" font-family="var(--font-jp)">AI/Data</text>
+              <text x="745" y="660" text-anchor="middle" font-size="15" font-weight="700" fill="var(--ink)" font-family="var(--font-jp)">&amp; Security</text>
+            </g>
+            <circle cx="295" cy="330" r="8" fill="var(--red)"><animate attributeName="opacity" values="0;1" dur="0.3s" begin="1.5s" fill="freeze"/></circle>
+            <circle cx="520" cy="330" r="8" fill="var(--teal)"><animate attributeName="opacity" values="0;1" dur="0.3s" begin="1.8s" fill="freeze"/></circle>
+            <circle cx="745" cy="330" r="8" fill="var(--gold)"><animate attributeName="opacity" values="0;1" dur="0.3s" begin="2.1s" fill="freeze"/></circle>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <!-- 8 : 主力事業:サービスソリューション -->
+    <section class="slide" data-idx="8">
+      <div class="slide-inner">
+        <div class="panel-text">
+          <div class="kicker"><span class="num">08</span>事業別実績<span class="bar"></span></div>
+          <h2 class="title">サービスソリューションが売上の6割を<br>稼ぐ中核事業になっている</h2>
+          <p class="lead">富士通の事業セグメントの中では、システムインテグレーションやアウトソーシングを含む「サービスソリューション」が最大規模になる。2025年3月期の売上収益は2兆2,459億円（連結売上の約63%、前期比5%増）、調整後営業利益は2,899億円（同22%増）に達した。</p>
+        </div>
+        <div class="panel-visual">
+          <svg viewBox="0 0 1040 900" aria-hidden="true">
+            <path id="spiral8" fill="none" stroke="var(--red-deep)" stroke-width="4"
+              d="M 520,460 m 0,-24 a 24,24 0 1,1 0,48 a 48,48 0 1,1 0,-96 a 96,96 0 1,1 0,192 a 144,144 0 1,1 0,-288"
+              stroke-dasharray="900" stroke-dashoffset="900">
+              <animate attributeName="stroke-dashoffset" from="900" to="0" dur="4.5s" fill="freeze"/>
+            </path>
+            <circle r="9" fill="var(--gold)">
+              <animateMotion dur="4.5s" repeatCount="indefinite">
+                <mpath href="#spiral8"/>
+              </animateMotion>
+            </circle>
+            <g font-size="15" font-weight="700" fill="var(--ink-soft)" font-family="var(--font-jp)">
+              <text x="540" y="450">売上収益</text>
+              <text x="560" y="330">2兆2,459億円</text>
+              <text x="580" y="200">前期比 +5%</text>
+              <text x="600" y="90">調整後営業利益 +22%</text>
+            </g>
+            <text x="520" y="810" text-anchor="middle" font-size="16" font-weight="900" fill="var(--red-deep)" font-family="var(--font-jp)">連結売上の約63%</text>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <!-- 9 : 業績ハイライト -->
+    <section class="slide" data-idx="9">
+      <div class="slide-inner">
+        <div class="panel-text">
+          <div class="kicker"><span class="num">09</span>業績<span class="bar"></span></div>
+          <h2 class="title">2025年3月期は事業利益が78%伸び、<br>過去最高益を更新した</h2>
+          <p class="lead">2025年3月期の連結売上収益は前期比2%増の3兆5,501億円、事業利益は78%増の2,650億円、調整後営業利益は16%増の3,072億円だった。調整後営業利益率は10%を超え、富士通自身が中期の通過点として掲げていた水準に達した。</p>
+          <p class="note">増益の背景には事業構造の転換に加え、連結従業員数を2022年3月末の12.4万人から2026年3月末の9.9万人まで見直した人員体制の変化もある。</p>
+        </div>
+        <div class="panel-visual">
+          <svg viewBox="0 0 1040 900" aria-hidden="true">
+            <path id="growth9" class="hairline" stroke-width="2" d="M 140,650 L 900,650"/>
+            <path d="M 140,600 C 350,590 600,470 900,270" fill="none" stroke="var(--red)" stroke-width="5"
+              stroke-dasharray="900" stroke-dashoffset="900">
+              <animate attributeName="stroke-dashoffset" from="900" to="0" dur="2.2s" fill="freeze"/>
+            </path>
+            <circle cx="140" cy="600" r="10" fill="var(--ink-soft)"/>
+            <text x="140" y="700" text-anchor="middle" font-size="15" font-weight="700" fill="var(--ink-soft)" font-family="var(--font-jp)">前期</text>
+            <text x="140" y="722" text-anchor="middle" font-size="14" font-weight="500" fill="var(--ink-soft)" font-family="var(--font-jp)">(2024年3月期)</text>
+            <circle cx="900" cy="270" r="13" fill="var(--red)">
+              <animate attributeName="r" values="10;16;10" dur="1.8s" begin="2.2s" repeatCount="indefinite"/>
+            </circle>
+            <text x="900" y="230" text-anchor="middle" font-size="17" font-weight="900" fill="var(--red-deep)" font-family="var(--font-jp)">最高益</text>
+            <text x="900" y="720" text-anchor="middle" font-size="15" font-weight="700" fill="var(--ink-soft)" font-family="var(--font-jp)">当期(2025年3月期)</text>
+            <g font-size="17" font-weight="900" fill="var(--ink)" font-family="var(--font-jp)">
+              <circle cx="180" cy="150" r="6" fill="var(--red)"/>
+              <text x="200" y="156">売上収益 +2%</text>
+              <circle cx="180" cy="195" r="6" fill="var(--red)"/>
+              <text x="200" y="201">事業利益 +78%</text>
+              <circle cx="180" cy="240" r="6" fill="var(--red)"/>
+              <text x="200" y="246">調整後営業利益 +16%</text>
+            </g>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <!-- 10 : グローバル展開 -->
+    <section class="slide" data-idx="10">
+      <div class="slide-inner">
+        <div class="panel-text">
+          <div class="kicker"><span class="num">10</span>グローバル展開<span class="bar"></span></div>
+          <h2 class="title">世界100カ国以上に広げた拠点網を、<br>稼ぐ力重視の構成へ見直している</h2>
+          <p class="lead">富士通は日本国内で培った技術を土台に、世界100カ国以上でサービスを提供する体制を築いてきた。近年は欧州・北米のITサービス事業の再編を進め、拠点の「数」よりも「稼ぐ力」を重視した構成に見直しつつある。</p>
+        </div>
+        <div class="panel-visual">
+          <svg viewBox="0 0 1040 900" aria-hidden="true">
+            <circle cx="520" cy="460" r="240" fill="none" class="hairline"/>
+            <path id="p10a" class="hairline" d="M 520,460 L 520,180"/>
+            <path id="p10b" class="hairline" d="M 520,460 L 830,340"/>
+            <path id="p10c" class="hairline" d="M 520,460 L 830,600"/>
+            <path id="p10d" class="hairline" d="M 520,460 L 260,660"/>
+            <circle r="8" fill="var(--red)"><animateMotion dur="2.6s" begin="0s" repeatCount="indefinite" calcMode="spline" keySplines="0.3 0 0.7 1" keyPoints="0;1" keyTimes="0;1"><mpath href="#p10a"/></animateMotion></circle>
+            <circle r="8" fill="var(--teal)"><animateMotion dur="2.6s" begin="0.4s" repeatCount="indefinite" calcMode="spline" keySplines="0.3 0 0.7 1" keyPoints="0;1" keyTimes="0;1"><mpath href="#p10b"/></animateMotion></circle>
+            <circle r="8" fill="var(--gold)"><animateMotion dur="2.6s" begin="0.8s" repeatCount="indefinite" calcMode="spline" keySplines="0.3 0 0.7 1" keyPoints="0;1" keyTimes="0;1"><mpath href="#p10c"/></animateMotion></circle>
+            <circle r="8" fill="var(--red)"><animateMotion dur="2.6s" begin="1.2s" repeatCount="indefinite" calcMode="spline" keySplines="0.3 0 0.7 1" keyPoints="0;1" keyTimes="0;1"><mpath href="#p10d"/></animateMotion></circle>
+            <circle cx="520" cy="460" r="24" fill="var(--red)"/>
+            <text x="520" y="467" text-anchor="middle" font-size="15" font-weight="900" fill="#fff" font-family="var(--font-jp)">日本</text>
+            <g font-size="16" font-weight="700" fill="var(--red-deep)" font-family="var(--font-jp)">
+              <text x="520" y="160" text-anchor="middle">アジア太平洋</text>
+              <text x="860" y="335" text-anchor="middle">北米</text>
+              <text x="860" y="620" text-anchor="middle">欧州</text>
+              <text x="230" y="690" text-anchor="middle">中国</text>
+            </g>
+            <text x="520" y="800" text-anchor="middle" font-size="15" font-weight="700" fill="var(--ink-soft)" font-family="var(--font-jp)">事業展開 100カ国以上</text>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <!-- 11 : まとめ -->
+    <section class="slide" data-idx="11">
+      <div class="slide-inner full">
+        <div class="panel-visual">
+          <svg viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+            <rect x="0" y="0" width="1600" height="900" fill="var(--paper-tint)"/>
+            <path id="ccA" class="hairline" d="M 140,150 C 380,220 600,320 780,430"/>
+            <path id="ccB" class="hairline" d="M 1460,160 C 1220,240 1000,330 800,430"/>
+            <path id="ccC" class="hairline" d="M 160,760 C 400,660 620,540 790,450"/>
+            <path id="ccD" class="hairline" d="M 1440,770 C 1200,660 1000,560 810,460"/>
+            <g font-size="16" font-weight="700" fill="var(--red-deep)" font-family="var(--font-jp)" opacity="0.85">
+              <text x="50" y="50">会社概要・沿革</text>
+              <text x="1330" y="140">存在意義</text>
+              <text x="1330" y="892">グローバル展開</text>
+              <text x="1290" y="810">Uvanceへの転換</text>
+            </g>
+            <circle r="10" class="node-core"><animateMotion dur="3.6s" repeatCount="indefinite" calcMode="spline" keySplines="0.3 0 0.6 1" keyPoints="0;1" keyTimes="0;1"><mpath href="#ccA"/></animateMotion></circle>
+            <circle r="10" class="node-core teal"><animateMotion dur="3.6s" begin="0.5s" repeatCount="indefinite" calcMode="spline" keySplines="0.3 0 0.6 1" keyPoints="0;1" keyTimes="0;1"><mpath href="#ccB"/></animateMotion></circle>
+            <circle r="10" class="node-core gold"><animateMotion dur="3.6s" begin="1s" repeatCount="indefinite" calcMode="spline" keySplines="0.3 0 0.6 1" keyPoints="0;1" keyTimes="0;1"><mpath href="#ccC"/></animateMotion></circle>
+            <circle r="10" class="node-core"><animateMotion dur="3.6s" begin="1.5s" repeatCount="indefinite" calcMode="spline" keySplines="0.3 0 0.6 1" keyPoints="0;1" keyTimes="0;1"><mpath href="#ccD"/></animateMotion></circle>
+            <g transform="translate(800,445)">
+              <ellipse rx="150" ry="96" fill="var(--paper)" stroke="var(--red)" stroke-width="7" stroke-dasharray="800" stroke-dashoffset="800">
+                <animate attributeName="stroke-dashoffset" values="800;0;0;800" keyTimes="0;0.45;0.85;1" dur="6.8s" repeatCount="indefinite"/>
+              </ellipse>
+              <ellipse rx="88" ry="40" fill="none" stroke="var(--teal)" stroke-width="6" stroke-dasharray="420" stroke-dashoffset="420">
+                <animate attributeName="stroke-dashoffset" values="420;0;0;420" keyTimes="0;0.5;0.9;1" dur="6.8s" begin="0.3s" repeatCount="indefinite"/>
+              </ellipse>
+              <circle r="11" fill="var(--gold)"><animate attributeName="r" values="9;15;9" dur="2.2s" repeatCount="indefinite"/></circle>
+              <text y="130" text-anchor="middle" font-size="19" font-weight="700" fill="var(--red-deep)" font-family="var(--font-jp)">Uvance 7,000億円へ</text>
+            </g>
+          </svg>
+        </div>
+        <div class="overlay-text center-top" style="max-width:1020px;">
+          <div class="eyebrow">SUMMARY</div>
+          <h1 class="cover-title" style="font-size:52px;">Uvanceを7,000億円規模の<br>成長エンジンに育てる</h1>
+          <p class="cover-sub">会社概要、沿革、存在意義、事業構造の転換――積み重ねてきた要素は、社会課題を解決して稼ぐ企業への転換という一つの方向に収束している。2025年度、Uvance関連の売上は前期比45%増の7,000億円を目標に置く。</p>
+        </div>
+        <div class="overlay-text" style="bottom:118px;padding-bottom:0;max-width:900px;gap:6px;">
+          <p class="sources">
+            <b>出典・クレジット</b><br>
+            数値：富士通 2025年3月期決算資料／有価証券報告書（第125期）／IR Day 2025資料／富士通コーポレートサイト「プロフィール」「沿革」ページを基に作成（2026年9月時点の公開情報による）<br>
+            本資料は公開情報を基にした独自の要約であり、富士通株式会社が作成・監修したものではない。
+          </p>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</div>
+
+<div class="deck-chrome">
+  <button id="prevBtn" aria-label="前のスライド">←</button>
+  <div class="progress"><div class="progress-fill" id="progressFill"></div></div>
+  <span id="pageNum">1 / 12</span>
+  <button id="nextBtn" aria-label="次のスライド">→</button>
+</div>
+
+<script>
+(function(){
+  var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var i = 0;
+  var stage = document.getElementById('stage');
+  var progressFill = document.getElementById('progressFill');
+  var pageNum = document.getElementById('pageNum');
+  var prevBtn = document.getElementById('prevBtn');
+  var nextBtn = document.getElementById('nextBtn');
+
+  function show(n){
+    i = Math.max(0, Math.min(n, slides.length - 1));
+    slides.forEach(function(s, idx){ s.classList.toggle('active', idx === i); });
+    progressFill.style.width = (i / (slides.length - 1) * 100) + '%';
+    pageNum.textContent = (i + 1) + ' / ' + slides.length;
+    prevBtn.disabled = (i === 0);
+    nextBtn.disabled = (i === slides.length - 1);
+  }
+
+  function scaleStage(){
+    var s = Math.min(window.innerWidth / 1600, window.innerHeight / 900);
+    var x = (window.innerWidth - 1600 * s) / 2;
+    var y = (window.innerHeight - 900 * s) / 2;
+    stage.style.transform = 'translate(' + x + 'px,' + y + 'px) scale(' + s + ')';
+  }
+
+  window.addEventListener('resize', scaleStage);
+  scaleStage();
+  show(0);
+
+  prevBtn.addEventListener('click', function(e){ e.stopPropagation(); show(i - 1); });
+  nextBtn.addEventListener('click', function(e){ e.stopPropagation(); show(i + 1); });
+
+  document.addEventListener('keydown', function(e){
+    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { show(i + 1); }
+    if (e.key === 'ArrowLeft' || e.key === 'PageUp') { show(i - 1); }
+  });
+
+  stage.addEventListener('click', function(){ show(i + 1); });
+
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    document.querySelectorAll('svg').forEach(function(svg){
+      if (svg.pauseAnimations) { try { svg.pauseAnimations(); } catch(e){} }
+    });
+  }
+})();
+</script>
+
+</body>
+</html>
