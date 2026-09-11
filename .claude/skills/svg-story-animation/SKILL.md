@@ -47,9 +47,10 @@ ICS MEDIAの整理に沿って使い分けます。
 ## リファレンス
 
 - [references/fundamentals.md](references/fundamentals.md) — 座標系・パスコマンド・`<defs>` / グラデーション / マスク、フィルタ（`feGaussianBlur` / `feTurbulence` / `feDisplacementMap` / グーイー合成）、テキストオンパス、CSS Scroll-driven Animations、モーフィングの制約と対処、SMILのタイミング属性一覧、イージング（`calcMode="spline"` の基本形とオーバーシュート/バネ的な近似）。実装前に迷ったらまずここ。
-- [references/storytelling-patterns.md](references/storytelling-patterns.md) — 冒頭の「概念→パターン早見表」で仕組みと視覚表現の組み合わせを一覧できる、20パターンのコピペ可能なSVGスニペット集（動くパス上の点だけでなく、発光・グーイー融合・液体の満ち・放射状バースト・ワイプ／リビール・グラデーションシマー・テキストオンパス追従・比較バーレース・ネットワーク点灯・viewBoxズーム・弾性バウンドまで収録）。まず「作る前の3つの問い」で仕組みを特定し、早見表から対応するパターンを開く。
+- [references/storytelling-patterns.md](references/storytelling-patterns.md) — 冒頭の「概念→パターン早見表」で仕組みと視覚表現の組み合わせを一覧できる、30パターンのコピペ可能なSVGスニペット集（動くパス上の点、発光・グーイー融合・液体の満ち・放射状バースト・ワイプ／リビール・グラデーションシマー・テキストオンパス追従・比較バーレース・ネットワーク点灯・viewBoxズーム・弾性バウンドに加え、分解→組立・ドミノ連鎖・経路描画＋カメラパン・樹形成長・鼓動／波形・織り込み・結晶化・ワイプ比較・キネティックタイポグラフィ・データグロースまで収録）。まず「作る前の3つの問い」で仕組みを特定し、早見表から対応するパターンを開く。1シーンで足りない場合は末尾の「複合シーン」で複数パターンを時間軸でつなぐ。
+- [references/illustration-styles.md](references/illustration-styles.md) — アニメーションを止めた「静止画そのもの」の絵づくり指針。汎用ストック人物イラスト（unDraw等）に頼らない6つの語彙（幾何学的抽象／データ・アズ・アート／タイポグラフィ／アイソメトリック技術図解／カスタムモノラインアイコン／テクスチャ）と、装飾要素をデッキ全体で使い回さないための一貫性ルール。
 - [references/library-escape-hatch.md](references/library-escape-hatch.md) — ネイティブSVG/CSSで構造的に無理がある場合（頂点数が大きく異なるモーフィング、本格的な物理バネ、複雑なスクロール演出）にだけ外部ライブラリ（GSAP / flubber等）を検討する基準と、単一HTML要件を壊さないための埋め込み方。
-- [references/checklist.md](references/checklist.md) — 実装後に見るチェックリスト（アクセシビリティ、パフォーマンス、パスモーフィングの制約、パターンの偏りなど）。
+- [references/checklist.md](references/checklist.md) — 実装後に見るチェックリスト（アクセシビリティ、パフォーマンス、パスモーフィングの制約、パターン・イラスト意匠の偏りなど）。
 
 ## このスキルが担当しないこと
 

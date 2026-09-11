@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ネクスト精工 基幹刷新</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#1a1a1a;
+  --ink-soft:#5b6570;
+  --paper:#ffffff;
+  --paper-tint:#f6f4f3;
+  --red:#e6002d;
+  --red-deep:#a3001f;
+  --red-tint:#fdecef;
+  --teal:#00838f;
+  --gold:#e8a33d;
+  --line:#e2ddd9;
+  --charcoal:#171414;
+  --font-jp:"Noto Sans JP","Hiragino Sans","Yu Gothic",sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{width:100%;height:100%;overflow:hidden;background:var(--charcoal);font-family:var(--font-jp);color:var(--ink);}
+button{font-family:var(--font-jp);}
+
+.deck-viewport{position:fixed;inset:0;overflow:hidden;background:var(--charcoal);}
+.stage{position:absolute;left:0;top:0;width:1600px;height:900px;transform-origin:0 0;overflow:hidden;background:var(--paper);}
+.slide{position:absolute;inset:0;width:1600px;height:900px;overflow:hidden;visibility:hidden;opacity:0;pointer-events:none;background:var(--paper);transition:opacity .55s ease;}
+.slide.active{visibility:visible;opacity:1;pointer-events:auto;z-index:1;}
+.slide-inner{position:absolute;inset:0;display:flex;}
+
+.panel-text{width:560px;flex:0 0 560px;padding:88px 56px 88px 84px;display:flex;flex-direction:column;justify-content:center;gap:22px;position:relative;z-index:2;background:var(--paper);}
+.panel-visual{flex:1;position:relative;background:var(--paper-tint);}
+.panel-visual svg{position:absolute;inset:0;width:100%;height:100%;}
+.panel-visual.table-panel{display:flex;align-items:center;justify-content:center;padding:0 76px;}
+
+.kicker{display:inline-flex;align-items:center;gap:10px;font-size:16px;font-weight:700;letter-spacing:.14em;color:var(--red);}
+.kicker .num{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;background:var(--red);color:#fff;font-size:14px;font-weight:700;}
+.kicker .bar{width:34px;height:3px;background:var(--gold);border-radius:2px;}
+
+h2.title{font-size:38px;line-height:1.46;font-weight:900;color:var(--ink);letter-spacing:.01em;}
+p.lead{font-size:17px;line-height:1.9;color:var(--ink-soft);font-weight:500;max-width:460px;}
+p.note{font-size:13px;line-height:1.8;color:var(--ink-soft);opacity:.85;max-width:460px;}
+
+.tag-row{display:flex;gap:9px;flex-wrap:wrap;margin-top:2px;}
+.tag{font-size:12.5px;font-weight:700;color:var(--red-deep);background:var(--red-tint);border:1px solid var(--line);border-radius:999px;padding:6px 13px;letter-spacing:.02em;}
+
+.deck-chrome{position:fixed;left:50%;bottom:26px;transform:translateX(-50%);display:flex;align-items:center;gap:18px;z-index:1000;background:rgba(23,20,20,.76);backdrop-filter:blur(6px);border-radius:999px;padding:10px 20px;box-shadow:0 8px 30px rgba(0,0,0,.3);}
+.deck-chrome button{width:36px;height:36px;border-radius:50%;border:none;cursor:pointer;background:rgba(255,255,255,.14);color:#fff;font-size:16px;display:flex;align-items:center;justify-content:center;transition:background .2s ease,color .2s ease;}
+.deck-chrome button:hover{background:var(--gold);color:var(--charcoal);}
+.deck-chrome button:disabled{opacity:.35;cursor:default;}
+.deck-chrome button:disabled:hover{background:rgba(255,255,255,.14);color:#fff;}
+.progress{width:220px;height:5px;border-radius:999px;background:rgba(255,255,255,.22);overflow:hidden;}
+.progress-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--teal),var(--gold));transition:width .4s ease;}
+#pageNum{color:#fff;font-size:14px;font-weight:700;letter-spacing:.04em;min-width:56px;text-align:center;}
+
+.slide-inner.full{display:block;}
+.slide-inner.full .panel-visual{position:absolute;inset:0;background:var(--paper);}
+.slide-inner.full .overlay-text{position:absolute;left:0;bottom:0;padding:0 90px 96px;z-index:3;display:flex;flex-direction:column;gap:18px;max-width:920px;}
+.slide-inner.full .overlay-text.center-top{top:0;bottom:auto;padding:104px 90px 0;}
+
+.eyebrow{font-size:15px;font-weight:700;letter-spacing:.26em;color:var(--red);}
+h1.cover-title{font-size:84px;font-weight:900;color:var(--ink);letter-spacing:.03em;line-height:1.05;}
+p.cover-sub{font-size:20px;color:var(--ink-soft);font-weight:500;line-height:1.75;max-width:660px;}
+
+.chip-bg{fill:#ffffff;stroke:var(--line);stroke-width:1.5;}
+.chip-text{fill:var(--red-deep);font-size:17px;font-weight:700;font-family:var(--font-jp);}
+.node-core{fill:var(--red);}
+.node-core.teal{fill:var(--teal);}
+.node-core.gold{fill:var(--gold);}
+.hairline{stroke:var(--line);stroke-width:2;fill:none;}
+.pathline{stroke:var(--red-deep);stroke-width:3;fill:none;stroke-linecap:round;}
+.pathline.teal{stroke:var(--teal);stroke-width:3;fill:none;stroke-linecap:round;}
+.label-text{fill:var(--red-deep);font-size:18px;font-weight:700;font-family:var(--font-jp);}
+.label-text.dark{fill:var(--ink);}
+.label-sub{fill:var(--ink-soft);font-size:14px;font-weight:500;font-family:var(--font-jp);}
+
+.data-table{width:100%;max-width:820px;border-collapse:collapse;font-variant-numeric:tabular-nums;}
+.data-table th,.data-table td{padding:20px 22px;border:none;text-align:left;font-family:var(--font-jp);}
+.data-table thead th{font-size:15px;font-weight:700;color:var(--ink-soft);border-bottom:2px solid var(--ink);letter-spacing:.02em;}
+.data-table thead th.col-num-h{text-align:right;}
+.data-table tbody tr+tr td{border-top:1px solid var(--line);}
+.data-table td.col-label{font-size:17px;font-weight:600;color:var(--ink);}
+.data-table td.col-num{text-align:right;font-size:20px;font-weight:700;color:var(--ink);}
+.data-table tr.row-highlight td{background:var(--red-tint);}
+.data-table tr.row-highlight td.col-label{color:var(--red-deep);}
+.data-table tr.row-highlight td.col-num{color:var(--red-deep);font-size:24px;}
+
+.sources{font-size:13px;color:var(--ink-soft);line-height:1.85;}
+.sources b{color:var(--ink);}
+
+@media (prefers-reduced-motion: reduce){
+  svg animate, svg animateTransform, svg animateMotion{animation-play-state:paused;}
+}
+</style>
+</head>
+<body>
+
+<div class="deck-viewport">
+  <div class="stage" id="stage">
+
+    <!-- 1 : 表紙 -->
+    <section class="slide active" data-idx="0">
+      <div class="slide-inner full">
+        <div class="panel-visual">
+          <svg viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+            <defs>
+              <radialGradient id="coverGlow" cx="62%" cy="46%" r="60%">
+                <stop offset="0%" stop-color="#fdf1ef"/>
+                <stop offset="100%" stop-color="#ffffff"/>
+              </radialGradient>
+            </defs>
+            <rect x="0" y="0" width="1600" height="900" fill="url(#coverGlow)"/>
+            <g opacity="0.9">
+              <path id="cvA" class="hairline" d="M 120,150 C 360,220 560,300 900,440"/>
+              <path id="cvB" class="hairline" d="M 900,90 C 900,220 900,330 900,440"/>
+              <path id="cvC" class="hairline" d="M 150,760 C 400,660 640,540 900,450"/>
+            </g>
+            <circle r="9" class="node-core"><animateMotion dur="3.2s" begin="0s" repeatCount="indefinite" calcMode="spline" keySplines="0.3 0 0.6 1" keyPoints="0;1" keyTimes="0;1"><mpath href="#cvA"/></animateMotion></circle>
+            <circle r="9" class="node-core teal"><animateMotion dur="3.2s" begin="0.45s" repeatCount="indefinite" calcMode="spline" keySplines="0.3 0 0.6 1" keyPoints="0;1" keyTimes="0;1"><mpath href="#cvB"/></animateMotion></circle>
+            <circle r="9" class="node-core gold"><animateMotion dur="3.2s" begin="0.9s" repeatCount="indefinite" calcMode="spline" keySplines="0.3 0 0.6 1" keyPoints="0;1" keyTimes="0;1"><mpath href="#cvC"/></animateMotion></circle>
+            <g transform="translate(900,445)">
+              <ellipse rx="150" ry="96" fill="none" stroke="var(--red)" stroke-width="7" stroke-dasharray="800" stroke-dashoffset="800">
+                <animate attributeName="stroke-dashoffset" values="800;0;0;800" keyTimes="0;0.45;0.85;1" dur="6.6s" repeatCount="indefinite"/>
+              </ellipse>
+              <circle r="12" fill="var(--gold)" stroke="#fff" stroke-width="2"><animate attributeName="r" values="10;15;10" dur="2.2s" repeatCount="indefinite"/></circle>
+              <text y="140" text-anchor="middle" font-size="18" font-weight="700" fill="var(--red-deep)" font-family="var(--font-jp)">GLOVIA iZ</text>
+            </g>
+          </svg>
+        </div>
+        <div class="overlay-text center-top" style="max-width:1040px;">
+          <div class="eyebrow">NEXT SEIKO MFG. ― FUJITSU GLOVIA iZ CASE STUDY</div>
+          <h1 class="cover-title" style="font-size:66px;">株式会社ネクスト精工</h1>
+          <p class="cover-sub">3拠点に散らばっていた生産・原価・会計の数字が、<br>基幹業務システムの刷新でひとつにまとまった。</p>
+        </div>
+        <div class="overlay-text" style="bottom:90px;padding-bottom:0;gap:12px;">
+          <div class="tag-row">
+            <span class="tag">精密部品製造</span><span class="tag">3拠点(関東・東海・九州)</span><span class="tag">多品種少量生産</span>
+          </div>
+          <p class="note">※説明のために構成した想定シナリオであり、登場する企業名・数値は実在しない。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2 : 課題 -->
+    <section class="slide" data-idx="1">
+      <div class="slide-inner">
+        <div class="panel-text">
+          <div class="kicker"><span class="num">01</span>課題<span class="bar"></span></div>
+          <h2 class="title">拠点が増えるほど、<br>数字を合わせる作業が増えていく。</h2>
+          <p class="lead">関東・東海・九州の3工場は、それぞれ別の生産管理システム・原価管理システム・会計システムで動いている。現場は在庫と原価を表計算ソフトの台帳で追い、月次の締めに10日かかっている。</p>
+          <div class="tag-row">
+            <span class="tag">月次の締め 10日</span><span class="tag">拠点間の突合 120時間/月</span><span class="tag">在庫把握は拠点ごと・週次</span>
+          </div>
+        </div>
+        <div class="panel-visual">
+          <svg viewBox="0 0 1040 900" aria-hidden="true">
+            <line x1="300" y1="325" x2="480" y2="325" class="hairline" stroke-dasharray="5 7"/>
+            <line x1="560" y1="325" x2="740" y2="325" class="hairline" stroke-dasharray="5 7"/>
+            <circle cx="480" cy="325" r="5" fill="none" stroke="var(--red)" stroke-width="2"><animate attributeName="opacity" values="0.35;1;0.35" dur="1.8s" repeatCount="indefinite"/></circle>
+            <circle cx="560" cy="325" r="5" fill="none" stroke="var(--red)" stroke-width="2"><animate attributeName="opacity" values="0.35;1;0.35" dur="1.8s" begin="0.3s" repeatCount="indefinite"/></circle>
+            <line x1="300" y1="595" x2="480" y2="595" class="hairline" stroke-dasharray="5 7"/>
+            <line x1="560" y1="595" x2="740" y2="595" class="hairline" stroke-dasharray="5 7"/>
+            <circle cx="480" cy="595" r="5" fill="none" stroke="var(--red)" stroke-width="2"><animate attributeName="opacity" values="0.35;1;0.35" dur="1.8s" begin="0.6s" repeatCount="indefinite"/></circle>
+            <circle cx="560" cy="595" r="5" fill="none" stroke="var(--red)" stroke-width="2"><animate attributeName="opacity" values="0.35;1;0.35" dur="1.8s" begin="0.9s" repeatCount="indefinite"/></circle>
+
+            <g transform="translate(70,150)">
+              <rect x="10" y="30" width="80" height="45" fill="var(--paper)" stroke="var(--ink-soft)" stroke-width="3"/>
+              <polygon points="10,30 50,8 90,30" fill="var(--paper)" stroke="var(--ink-soft)" stroke-width="3" stroke-linejoin="round"/>
+              <rect x="66" y="14" width="10" height="18" fill="var(--paper)" stroke="var(--ink-soft)" stroke-width="3"/>
+              <rect x="30" y="48" width="16" height="27" fill="none" stroke="var(--ink-soft)" stroke-width="3"/>
+            </g>
+            <rect x="230" y="168" width="150" height="44" rx="22" class="chip-bg"/>
+            <text x="305" y="195" text-anchor="middle" class="chip-text">関東工場</text>
+            <rect x="420" y="168" width="330" height="44" rx="22" fill="var(--red-tint)" stroke="var(--line)" stroke-width="1.5"/>
+            <text x="585" y="195" text-anchor="middle" font-size="15" font-weight="700" fill="var(--red-deep)" font-family="var(--font-jp)">生産管理システムA</text>
+
+            <g transform="translate(70,420)">
+              <rect x="10" y="30" width="80" height="45" fill="var(--paper)" stroke="var(--ink-soft)" stroke-width="3"/>
+              <polygon points="10,30 50,8 90,30" fill="var(--paper)" stroke="var(--ink-soft)" stroke-width="3" stroke-linejoin="round"/>
+              <rect x="66" y="14" width="10" height="18" fill="var(--paper)" stroke="var(--ink-soft)" stroke-width="3"/>
+              <rect x="30" y="48" width="16" height="27" fill="none" stroke="var(--ink-soft)" stroke-width="3"/>
+            </g>
+            <rect x="230" y="438" width="150" height="44" rx="22" class="chip-bg"/>
+            <text x="305" y="465" text-anchor="middle" class="chip-text">東海工場</text>
+            <rect x="420" y="438" width="330" height="44" rx="22" fill="var(--red-tint)" stroke="var(--line)" stroke-width="1.5"/>
+            <text x="585" y="465" text-anchor="middle" font-size="15" font-weight="700" fill="var(--red-deep)" font-family="var(--font-jp)">会計システムB</text>
+
+            <g transform="translate(70,690)">
+              <rect x="10" y="30" width="80" height="45" fill="var(--paper)" stroke="var(--ink-soft)" stroke-width="3"/>
+              <polygon points="10,30 50,8 90,30" fill="var(--paper)" stroke="var(--ink-soft)" stroke-width="3" stroke-linejoin="round"/>
+              <rect x="66" y="14" width="10" height="18" fill="var(--paper)" stroke="var(--ink-soft)" stroke-width="3"/>
+              <rect x="30" y="48" width="16" height="27" fill="none" stroke="var(--ink-soft)" stroke-width="3"/>
+            </g>
+            <rect x="230" y="708" width="150" height="44" rx="22" class="chip-bg"/>
+            <text x="305" y="735" text-anchor="middle" class="chip-text">九州工場</text>
+            <rect x="420" y="708" width="330" height="44" rx="22" fill="var(--red-tint)" stroke="var(--line)" stroke-width="1.5"/>
+            <text x="585" y="735" text-anchor="middle" font-size="15" font-weight="700" fill="var(--red-deep)" font-family="var(--font-jp)">原価管理システムC</text>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3 : 対応 -->
+    <section class="slide" data-idx="2">
+      <div class="slide-inner">
+        <div class="panel-text">
+          <div class="kicker"><span class="num">02</span>対応<span class="bar"></span></div>
+          <h2 class="title">生産・原価・会計を、<br>ひとつの基盤に載せ替えた。</h2>
+          <p class="lead">富士通の基幹業務システム(GLOVIA iZ)にクラウド型で入れ替え、生産管理・原価管理・会計処理を1つの基盤にまとめた。拠点をまたぐ原価集計は標準機能でまかない、入力ルールと締め処理の手順を全拠点で共通化した。</p>
+          <div class="tag-row">
+            <span class="tag">生産管理</span><span class="tag">原価管理</span><span class="tag">会計処理</span><span class="tag">→ GLOVIA iZ に統合</span>
+          </div>
+        </div>
+        <div class="panel-visual">
+          <svg viewBox="0 0 1040 900" aria-hidden="true">
+            <defs>
+              <filter id="gooMerge">
+                <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur"/>
+                <feColorMatrix in="blur" mode="matrix"
+                  values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 20 -9" result="goo"/>
+                <feComposite in="SourceGraphic" in2="goo" operator="atop"/>
+              </filter>
+            </defs>
+            <circle cx="560" cy="470" r="120" fill="none" stroke="var(--line)" stroke-width="2" stroke-dasharray="6 8"/>
+
+            <g filter="url(#gooMerge)">
+              <circle cx="260" cy="330" r="74" fill="var(--red)" opacity="0.92">
+                <animateTransform attributeName="transform" type="translate" values="0 0;300 140;300 140" keyTimes="0;0.6;1" dur="3.4s" repeatCount="indefinite"/>
+              </circle>
+              <circle cx="560" cy="330" r="74" fill="var(--red)" opacity="0.92">
+                <animateTransform attributeName="transform" type="translate" values="0 0;0 140;0 140" keyTimes="0;0.6;1" dur="3.4s" begin="0.15s" repeatCount="indefinite"/>
+              </circle>
+              <circle cx="860" cy="330" r="74" fill="var(--red)" opacity="0.92">
+                <animateTransform attributeName="transform" type="translate" values="0 0;-300 140;-300 140" keyTimes="0;0.6;1" dur="3.4s" begin="0.3s" repeatCount="indefinite"/>
+              </circle>
+            </g>
+
+            <text x="260" y="230" text-anchor="middle" class="label-text dark">生産管理</text>
+            <text x="560" y="230" text-anchor="middle" class="label-text dark">原価管理</text>
+            <text x="860" y="230" text-anchor="middle" class="label-text dark">会計</text>
+
+            <rect x="470" y="592" width="180" height="46" rx="23" class="chip-bg"/>
+            <text x="560" y="621" text-anchor="middle" class="chip-text">GLOVIA iZ</text>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4 : 仕組み -->
+    <section class="slide" data-idx="3">
+      <div class="slide-inner">
+        <div class="panel-text">
+          <div class="kicker"><span class="num">03</span>仕組み<span class="bar"></span></div>
+          <h2 class="title">3拠点の入力が、<br>ひとつの原価集計に集まる。</h2>
+          <p class="lead">各拠点の生産・在庫データが基幹業務システムに集まり、締め処理の前に自動で1つの原価集計にまとまる。</p>
+          <div class="tag-row">
+            <span class="tag">関東工場</span><span class="tag">東海工場</span><span class="tag">九州工場</span><span class="tag">→ 統一原価集計</span>
+          </div>
+        </div>
+        <div class="panel-visual">
+          <svg viewBox="0 0 1040 900" aria-hidden="true">
+            <defs>
+              <filter id="hubGlow" x="-60%" y="-60%" width="220%" height="220%">
+                <feGaussianBlur stdDeviation="10" result="blur"/>
+                <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+              </filter>
+            </defs>
+
+            <path id="pthA" class="hairline" d="M 170,200 C 380,200 480,340 620,460"/>
+            <path id="pthB" class="hairline" d="M 170,460 C 350,460 500,460 620,460"/>
+            <path id="pthC" class="hairline" d="M 170,720 C 380,720 480,580 620,460"/>
+            <path id="pthOut" class="hairline" d="M 676,460 L 870,460"/>
+
+            <g transform="translate(120,164)">
+              <rect x="10" y="30" width="80" height="45" fill="var(--paper)" stroke="var(--ink-soft)" stroke-width="3"/>
+              <polygon points="10,30 50,8 90,30" fill="var(--paper)" stroke="var(--ink-soft)" stroke-width="3" stroke-linejoin="round"/>
+            </g>
+            <text x="160" y="150" text-anchor="middle" class="label-text dark">関東工場</text>
+
+            <g transform="translate(120,424)">
+              <rect x="10" y="30" width="80" height="45" fill="var(--paper)" stroke="var(--ink-soft)" stroke-width="3"/>
+              <polygon points="10,30 50,8 90,30" fill="var(--paper)" stroke="var(--ink-soft)" stroke-width="3" stroke-linejoin="round"/>
+            </g>
+            <text x="160" y="410" text-anchor="middle" class="label-text dark">東海工場</text>
+
+            <g transform="translate(120,684)">
+              <rect x="10" y="30" width="80" height="45" fill="var(--paper)" stroke="var(--ink-soft)" stroke-width="3"/>
+              <polygon points="10,30 50,8 90,30" fill="var(--paper)" stroke="var(--ink-soft)" stroke-width="3" stroke-linejoin="round"/>
+            </g>
+            <text x="160" y="750" text-anchor="middle" class="label-text dark">九州工場</text>
+
+            <circle r="8" class="node-core"><animateMotion dur="2.4s" begin="0s" repeatCount="indefinite" calcMode="spline" keySplines="0.3 0 0.6 1" keyPoints="0;1" keyTimes="0;1"><mpath href="#pthA"/></animateMotion></circle>
+            <circle r="8" class="node-core teal"><animateMotion dur="2.4s" begin="0.4s" repeatCount="indefinite" calcMode="spline" keySplines="0.3 0 0.6 1" keyPoints="0;1" keyTimes="0;1"><mpath href="#pthB"/></animateMotion></circle>
+            <circle r="8" class="node-core gold"><animateMotion dur="2.4s" begin="0.8s" repeatCount="indefinite" calcMode="spline" keySplines="0.3 0 0.6 1" keyPoints="0;1" keyTimes="0;1"><mpath href="#pthC"/></animateMotion></circle>
+
+            <circle cx="620" cy="460" r="56" fill="var(--paper)" stroke="var(--red)" stroke-width="5"/>
+            <circle cx="620" cy="460" r="16" fill="var(--gold)"><animate attributeName="r" values="14;22;14" dur="2s" repeatCount="indefinite"/></circle>
+            <text x="620" y="392" text-anchor="middle" class="label-sub">基幹業務システム</text>
+            <rect x="540" y="534" width="160" height="42" rx="21" class="chip-bg"/>
+            <text x="620" y="561" text-anchor="middle" class="chip-text">GLOVIA iZ</text>
+
+            <circle cx="960" cy="460" r="66" fill="var(--teal)" opacity="0.16" filter="url(#hubGlow)">
+              <animate attributeName="opacity" values="0.12;0.28;0.12" dur="2.2s" repeatCount="indefinite"/>
+            </circle>
+            <rect x="880" y="422" width="160" height="76" rx="14" fill="var(--paper)" stroke="var(--teal)" stroke-width="4"/>
+            <text x="960" y="454" text-anchor="middle" font-size="15" font-weight="700" fill="var(--teal)" font-family="var(--font-jp)">統一原価</text>
+            <text x="960" y="478" text-anchor="middle" font-size="15" font-weight="700" fill="var(--teal)" font-family="var(--font-jp)">集計</text>
+
+            <circle r="9" fill="var(--gold)"><animateMotion dur="1.6s" begin="0s" repeatCount="indefinite" calcMode="spline" keySplines="0.3 0 0.6 1" keyPoints="0;1" keyTimes="0;1"><mpath href="#pthOut"/></animateMotion></circle>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5 : 効果 -->
+    <section class="slide" data-idx="4">
+      <div class="slide-inner">
+        <div class="panel-text">
+          <div class="kicker"><span class="num">04</span>効果<span class="bar"></span></div>
+          <h2 class="title">月次の締めは10日から3日に、<br>短縮した。</h2>
+          <p class="lead">手作業の拠点間突合が減り、在庫・原価もリアルタイムで見えるようになった分だけ、経営会議に間に合う数字が増えた。</p>
+        </div>
+        <div class="panel-visual table-panel">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>指標</th>
+                <th class="col-num-h">導入前</th>
+                <th class="col-num-h">導入後</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="row-highlight">
+                <td class="col-label">月次の締め日数</td>
+                <td class="col-num">10日</td>
+                <td class="col-num">3日</td>
+              </tr>
+              <tr>
+                <td class="col-label">拠点間データ突合の工数</td>
+                <td class="col-num">120時間/月</td>
+                <td class="col-num">35時間/月</td>
+              </tr>
+              <tr>
+                <td class="col-label">在庫・原価の把握</td>
+                <td class="col-num">拠点ごと・週次</td>
+                <td class="col-num">全社・リアルタイム</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6 : まとめ -->
+    <section class="slide" data-idx="5">
+      <div class="slide-inner full">
+        <div class="panel-visual">
+          <svg viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+            <rect x="0" y="0" width="1600" height="900" fill="var(--paper-tint)"/>
+            <path id="ccA" class="hairline" d="M 140,150 C 380,220 600,320 780,430"/>
+            <path id="ccB" class="hairline" d="M 1460,160 C 1220,240 1000,330 800,430"/>
+            <path id="ccC" class="hairline" d="M 160,760 C 400,660 620,540 790,450"/>
+            <path id="ccD" class="hairline" d="M 1440,770 C 1200,660 1000,560 810,460"/>
+            <g font-size="16" font-weight="700" fill="var(--red-deep)" font-family="var(--font-jp)" opacity="0.85">
+              <text x="70" y="60">課題</text>
+              <text x="1500" y="140" text-anchor="end">対応</text>
+              <text x="70" y="650">仕組み</text>
+              <text x="1500" y="800" text-anchor="end">効果</text>
+            </g>
+            <circle r="10" class="node-core"><animateMotion dur="3.6s" repeatCount="indefinite" calcMode="spline" keySplines="0.3 0 0.6 1" keyPoints="0;1" keyTimes="0;1"><mpath href="#ccA"/></animateMotion></circle>
+            <circle r="10" class="node-core teal"><animateMotion dur="3.6s" begin="0.5s" repeatCount="indefinite" calcMode="spline" keySplines="0.3 0 0.6 1" keyPoints="0;1" keyTimes="0;1"><mpath href="#ccB"/></animateMotion></circle>
+            <circle r="10" class="node-core gold"><animateMotion dur="3.6s" begin="1s" repeatCount="indefinite" calcMode="spline" keySplines="0.3 0 0.6 1" keyPoints="0;1" keyTimes="0;1"><mpath href="#ccC"/></animateMotion></circle>
+            <circle r="10" class="node-core"><animateMotion dur="3.6s" begin="1.5s" repeatCount="indefinite" calcMode="spline" keySplines="0.3 0 0.6 1" keyPoints="0;1" keyTimes="0;1"><mpath href="#ccD"/></animateMotion></circle>
+            <g transform="translate(800,445)">
+              <ellipse rx="150" ry="96" fill="var(--paper)" stroke="var(--red)" stroke-width="7" stroke-dasharray="800" stroke-dashoffset="800">
+                <animate attributeName="stroke-dashoffset" values="800;0;0;800" keyTimes="0;0.45;0.85;1" dur="6.8s" repeatCount="indefinite"/>
+              </ellipse>
+              <circle r="11" fill="var(--gold)"><animate attributeName="r" values="9;15;9" dur="2.2s" repeatCount="indefinite"/></circle>
+              <text y="130" text-anchor="middle" font-size="19" font-weight="700" fill="var(--red-deep)" font-family="var(--font-jp)">GLOVIA iZ</text>
+            </g>
+          </svg>
+        </div>
+        <div class="overlay-text center-top" style="max-width:1020px;">
+          <div class="eyebrow">SUMMARY</div>
+          <h1 class="cover-title" style="font-size:52px;">基幹をひとつにすることが、<br>複数拠点経営の土台になる。</h1>
+          <p class="cover-sub">生産・原価・会計を1つの基盤に載せ替えたことで、拠点が増えても数字を合わせる作業は増えなくなった。</p>
+        </div>
+        <div class="overlay-text" style="bottom:100px;padding-bottom:0;max-width:900px;gap:6px;">
+          <p class="sources">
+            <b>注記</b><br>
+            本事例は説明のために構成した架空のシナリオであり、登場する企業名・数値は実在しない。富士通株式会社が作成・監修したものではない。
+          </p>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</div>
+
+<div class="deck-chrome">
+  <button id="prevBtn" aria-label="前のスライド">←</button>
+  <div class="progress"><div class="progress-fill" id="progressFill"></div></div>
+  <span id="pageNum">1 / 6</span>
+  <button id="nextBtn" aria-label="次のスライド">→</button>
+</div>
+
+<script>
+(function(){
+  var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var i = 0;
+  var stage = document.getElementById('stage');
+  var progressFill = document.getElementById('progressFill');
+  var pageNum = document.getElementById('pageNum');
+  var prevBtn = document.getElementById('prevBtn');
+  var nextBtn = document.getElementById('nextBtn');
+
+  function show(n){
+    i = Math.max(0, Math.min(n, slides.length - 1));
+    slides.forEach(function(s, idx){ s.classList.toggle('active', idx === i); });
+    progressFill.style.width = (i / (slides.length - 1) * 100) + '%';
+    pageNum.textContent = (i + 1) + ' / ' + slides.length;
+    prevBtn.disabled = (i === 0);
+    nextBtn.disabled = (i === slides.length - 1);
+  }
+
+  function scaleStage(){
+    var s = Math.min(window.innerWidth / 1600, window.innerHeight / 900);
+    var x = (window.innerWidth - 1600 * s) / 2;
+    var y = (window.innerHeight - 900 * s) / 2;
+    stage.style.transform = 'translate(' + x + 'px,' + y + 'px) scale(' + s + ')';
+  }
+
+  window.addEventListener('resize', scaleStage);
+  scaleStage();
+  show(0);
+
+  prevBtn.addEventListener('click', function(e){ e.stopPropagation(); show(i - 1); });
+  nextBtn.addEventListener('click', function(e){ e.stopPropagation(); show(i + 1); });
+
+  document.addEventListener('keydown', function(e){
+    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { show(i + 1); }
+    if (e.key === 'ArrowLeft' || e.key === 'PageUp') { show(i - 1); }
+  });
+
+  stage.addEventListener('click', function(){ show(i + 1); });
+
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    document.querySelectorAll('svg').forEach(function(svg){
+      if (svg.pauseAnimations) { try { svg.pauseAnimations(); } catch(e){} }
+    });
+  }
+})();
+</script>
+
+</body></html>

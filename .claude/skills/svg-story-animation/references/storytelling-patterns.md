@@ -19,6 +19,16 @@
 | 強調・注目を集める | 8（グロー／パルス強調）／13（グラデーションシマー） |
 | 決着・結論の着地 | 19（弾性バウンド） |
 | ページスクロールに合わせた進行（ランディングページ等） | 20（スクロール連動プログレッシブ・リビール、CSS） |
+| 統合・完成（部品が集まって1つの成果物になる） | 21（分解→組立） |
+| 因果の連鎖（1つの出来事が次々に波及する） | 22（ドミノ連鎖） |
+| 空間移動・拠点展開（俯瞰しながら経路を辿る） | 23（経路描画＋カメラパン） |
+| 階層・意思決定の枝分かれ（組織図・決定木） | 24（樹形成長）／6（分岐拡大） |
+| 稼働中・生存確認（施策が今も動いている実感） | 25（鼓動・波形） |
+| 協働・連携が編み込まれる | 26（織り込み） |
+| 断片が意味のある像を結ぶ（点や事実が全体像になる） | 27（結晶化） |
+| 比較のBefore/After（同じ場面の2状態を切り替えて見せる） | 28（ワイプ比較）／15（比較バーレース） |
+| 語順で意味が立ち上がる強調（キーワードだけ効かせる） | 29（キネティック・タイポグラフィ） |
+| データが生まれる瞬間（数値そのものの発生を見せる） | 30（データ・グロース） |
 
 ## 1. 収束 — 複数の入力が一点・一本の道へ集まる
 
@@ -379,6 +389,197 @@
 ```
 
 詳細は [references/fundamentals.md](fundamentals.md) の「CSSスクロール連動アニメーション」を参照。
+
+## 21. 分解→組立（エクスプローデッドビュー）— 散らばった部品が1つの成果物になる
+
+用途：複数の施策・要素が組み合わさって1つの成果になる、バラバラだった機能が統合される瞬間。パターン1（収束）が「点」に集まるのに対し、こちらは複数の部品がそれぞれ定位置に収まり「形」を完成させる。
+
+```svg
+<g>
+  <rect x="120" y="80"  width="60" height="60" fill="var(--blue)">
+    <animateTransform attributeName="transform" type="translate" values="0 0;280 220;280 220" keyTimes="0;0.7;1" dur="2.4s" calcMode="spline" keySplines="0.3 0 0.7 1;0.3 0 0.7 1" fill="freeze"/>
+  </rect>
+  <rect x="600" y="120" width="60" height="60" fill="var(--aqua)">
+    <animateTransform attributeName="transform" type="translate" values="0 0;-220 180;-220 180" keyTimes="0;0.7;1" dur="2.4s" begin="0.15s" calcMode="spline" keySplines="0.3 0 0.7 1;0.3 0 0.7 1" fill="freeze"/>
+  </rect>
+  <!-- 3つ目以降のピースも同様に、終点座標が1つの完成形（例: 中央の正方形）を構成するよう配置する -->
+</g>
+```
+
+各ピースの終点座標を先に決めて完成形を描き、そこから逆算して開始位置を散らすと破綻しにくい。3〜4ピースまでが目安（「作る前の3つの問い」の主役数上限と同じ理由）。
+
+## 22. ドミノ連鎖 — 1つの出来事が次々に波及する
+
+用途：最初の小さな気づき・決定が、関係者や工程へ順番に伝播していく様子。パターン16（ネットワーク点灯）が同時多発的な広がりなのに対し、こちらは1本の順番が明確な連鎖。
+
+```svg
+<g transform-origin="60 200">
+  <rect id="d1" x="50" y="140" width="20" height="120" fill="var(--blue)">
+    <animateTransform attributeName="transform" type="rotate" values="0 60 260;70 60 260" dur="0.35s" begin="0s" fill="freeze"/>
+  </rect>
+</g>
+<g transform-origin="160 200">
+  <rect id="d2" x="150" y="140" width="20" height="120" fill="var(--blue)">
+    <animateTransform attributeName="transform" type="rotate" values="0 160 260;70 160 260" dur="0.35s" begin="d1.end" fill="freeze"/>
+  </rect>
+</g>
+<!-- d3, d4... も begin="d2.end" のように前の要素の終了を起点に連鎖させる -->
+```
+
+`begin` を秒数の決め打ちではなく `前要素.end` で連鎖させるのが要点。後から駒を増減しても全体のタイミングが自動で追従する。
+
+## 23. 経路描画＋カメラパン — 俯瞰しながら拠点・経路を辿る
+
+用途：複数拠点の展開、視察・出張のような移動、地図やフロア図の上で視点そのものが移動する説明。パターン17（viewBoxズーム）が静止した1点への拡大なのに対し、こちらは経路に沿って視点が連続的に移動する。
+
+```svg
+<svg viewBox="0 0 1000 600">
+  <path id="route" d="M 120,500 Q 400,520 480,320 T 860,140" fill="none" stroke="var(--line)" stroke-width="3"
+        stroke-dasharray="900" stroke-dashoffset="900">
+    <animate attributeName="stroke-dashoffset" from="900" to="0" dur="3.5s" fill="freeze"/>
+  </path>
+  <circle r="9" fill="var(--yellow)">
+    <animateMotion dur="3.5s" fill="freeze" rotate="auto">
+      <mpath href="#route"/>
+    </animateMotion>
+  </circle>
+  <!-- viewBox自体を経路の進行に合わせて少しずつパンさせる（始点付近→終点付近） -->
+  <animate attributeName="viewBox"
+    values="0 200 1000 600;0 200 1000 600;300 0 1000 600" keyTimes="0;0.15;1"
+    calcMode="spline" keySplines="0.3 0 0.7 1;0.3 0 0.7 1" dur="3.5s" fill="freeze"/>
+</svg>
+```
+
+拠点マーカー（`circle`）は経路上の到達タイミングに合わせて `opacity` を `0→1` にすると「訪問した瞬間」を示せる。
+
+## 24. 樹形成長 — 意思決定木・組織階層が枝ごとに育つ
+
+用途：組織図、意思決定の分岐、段階的に詳細化していく階層構造。パターン6（分岐拡大）が同時展開なのに対し、こちらは幹→枝→葉の順に生えていく時間差を持たせる。
+
+```svg
+<path id="trunk" d="M 400,500 L 400,340" stroke="var(--line)" stroke-width="4" fill="none"
+      stroke-dasharray="160" stroke-dashoffset="160">
+  <animate attributeName="stroke-dashoffset" from="160" to="0" dur="0.8s" fill="freeze"/>
+</path>
+<path id="branchL" d="M 400,340 L 280,220" stroke="var(--line)" stroke-width="3" fill="none"
+      stroke-dasharray="160" stroke-dashoffset="160">
+  <animate attributeName="stroke-dashoffset" from="160" to="0" dur="0.6s" begin="trunk.end" fill="freeze"/>
+</path>
+<circle cx="280" cy="220" r="8" fill="var(--blue-mid)" opacity="0">
+  <animate attributeName="opacity" from="0" to="1" dur="0.2s" begin="branchL.end" fill="freeze"/>
+</circle>
+<!-- branchR, さらに下位の枝も同様に前の枝の.endを起点に連鎖させる -->
+```
+
+深い階層でも「今どの枝を説明しているか」が時間軸として明確になる。項目数が多い場合は主要な2〜3段だけをアニメーションさせ、末端は静止画で一括表示してよい。
+
+## 25. 鼓動・波形 — 稼働中・生存確認のメタファー
+
+用途：施策や仕組みが「今も動き続けている」実感、モニタリング・ヘルスチェックの比喩。
+
+```svg
+<polyline points="40,200 160,200 190,120 220,280 250,160 280,200 400,200"
+          fill="none" stroke="var(--aqua)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+  <animateTransform attributeName="transform" type="translate"
+    values="0 0;-360 0" dur="2.2s" repeatCount="indefinite" calcMode="linear"/>
+</polyline>
+<!-- 同じpolylineをx+360した複製をもう1つ重ね、同じtranslateで繋ぎ目なくループさせる -->
+```
+
+波形の複製をつなげてループさせる際は、2本の開始・終了のY座標を一致させてつなぎ目の段差が出ないようにする。ループが速すぎると不安を煽る見た目になるので、周期は2秒以上を目安にする。
+
+## 26. 織り込み — 協働・連携が編み込まれる
+
+用途：複数の主体（部門・パートナー・データ）が独立に動きながら1つの成果に織り込まれていく様子。パターン9（グーイー結合）が「融合して境界が消える」のに対し、こちらは互いの独立性を保ったまま「絡み合う」。
+
+```svg
+<path d="M 100,150 C 250,150 250,450 400,450 S 550,150 700,150" fill="none" stroke="var(--blue)" stroke-width="6" stroke-linecap="round"/>
+<path d="M 100,450 C 250,450 250,150 400,150 S 550,450 700,450" fill="none" stroke="var(--aqua)" stroke-width="6" stroke-linecap="round" opacity="0.9"/>
+<!-- 交差点で手前になる方を切り替えたい場合は、交差点付近だけ別要素に分割してz-orderを前後させる -->
+```
+
+2本の`S`（スムーズ曲線）を左右対称に描くのが基本形。本格的に上下が交互に入れ替わる「本物の編み込み」にしたい場合は交差点ごとに要素を分割する必要があるため、まずはこの簡略版（2本が交差するだけ）で十分な場面が多い。
+
+## 27. 結晶化 — 断片が集まって意味のある像を結ぶ
+
+用途：バラバラな事実・データ点が、集まることで初めて1つの全体像・気づきとして立ち上がる瞬間。パターン1（収束）が「1点」への収束なのに対し、こちらは複数点が集まって「輪郭のある形」を作る。
+
+```svg
+<g id="fragments">
+  <circle r="4" fill="var(--ink-soft)"><animateMotion path="M 0,0 L 220,180" dur="1.8s" fill="freeze"/></circle>
+  <circle r="4" fill="var(--ink-soft)"><animateMotion path="M 800,0 L 380,140" dur="1.8s" fill="freeze"/></circle>
+  <circle r="4" fill="var(--ink-soft)"><animateMotion path="M 0,500 L 300,320" dur="1.8s" fill="freeze"/></circle>
+  <!-- 各断片の終点が、下の輪郭線上の点に一致するよう配置する -->
+</g>
+<path d="M 220,180 L 380,140 L 460,260 L 300,320 Z" fill="none" stroke="var(--yellow)" stroke-width="3"
+      stroke-dasharray="500" stroke-dashoffset="500" opacity="0">
+  <animate attributeName="opacity" from="0" to="1" dur="0.1s" begin="1.7s" fill="freeze"/>
+  <animate attributeName="stroke-dashoffset" from="500" to="0" dur="0.9s" begin="1.7s" fill="freeze"/>
+</path>
+```
+
+断片の終点座標を輪郭パスの頂点に正確に合わせるのが要点。ずれていると「集まった」感が出ない。
+
+## 28. ワイプ比較 — 同じ場面のBefore/Afterを1枚で切り替える
+
+用途：施策の前後、旧UI/新UI、旧体制/新体制など「同じ構図のまま中身が変わった」ことを見せる。パターン12（ワイプ／リビール）が無地からの出現なのに対し、こちらは背後に「Before」の絵がすでにある状態から「After」で置き換える。
+
+```svg
+<g id="before"><!-- Before側のイラスト・図をここに --></g>
+<clipPath id="afterClip">
+  <rect x="0" y="0" width="0" height="600">
+    <animate attributeName="width" from="0" to="800" dur="1.4s" begin="click" fill="freeze"/>
+  </rect>
+</clipPath>
+<g clip-path="url(#afterClip)"><!-- After側のイラスト・図をここに（Beforeと同じ座標系で描く） --></g>
+<line x1="0" y1="0" x2="0" y2="600" stroke="var(--accent)" stroke-width="3">
+  <animate attributeName="x1" from="0" to="800" dur="1.4s" begin="click" fill="freeze"/>
+  <animate attributeName="x2" from="0" to="800" dur="1.4s" begin="click" fill="freeze"/>
+</line>
+```
+
+境界線（`line`）を動く仕切りとして重ねると「今どこまでがAfterか」が明確になる。自動再生よりも `begin="click"` でユーザー操作に委ねる方が、比較を自分のペースで確認できる。
+
+## 29. キネティック・タイポグラフィ — 語順で意味が立ち上がる
+
+用途：短いフレーズの中で1語だけを強調して結論を印象づけたいとき。文章そのものが主役になる、装飾を最小にしたページに向く。
+
+```svg
+<text x="80" y="200" font-size="56" fill="var(--ink-soft)">
+  <tspan opacity="0"><animate attributeName="opacity" from="0" to="1" dur="0.4s" begin="0s" fill="freeze"/>選択肢が増えるほど、</tspan>
+</text>
+<text x="80" y="270" font-size="56" fill="var(--ink)">
+  <tspan opacity="0"><animate attributeName="opacity" from="0" to="1" dur="0.4s" begin="0.5s" fill="freeze"/>進むべき道は</tspan>
+  <tspan fill="var(--accent)" font-weight="700" opacity="0">
+    <animate attributeName="opacity" from="0" to="1" dur="0.4s" begin="1s" fill="freeze"/>
+    見えにくくなる。
+  </tspan>
+</text>
+```
+
+強調語だけ `fill` と `font-weight` を変え、他の語より僅かに遅れて登場させる。全語を同じ速度で流すと「ただのフェードイン」になり意味が立ち上がらないため、強調語の前に一拍（0.2〜0.3秒）の間を空けるのが要点。多用すると読みづらくなるので1ページに1回まで。
+
+## 30. データ・グロース — 数値が発生する瞬間を見せる
+
+用途：`data-graphics` の棒グラフ・面グラフに「今まさにこの数字が生まれた」という時間軸を足したいとき。静止画のグラフに動きを重ねる、2スキルの接点にあたるパターン。
+
+```svg
+<line x1="60" y1="400" x2="760" y2="400" stroke="currentColor" stroke-opacity=".4"/>
+<rect x="100" y="400" width="80" height="0" fill="var(--neutral)">
+  <animate attributeName="y" values="400;220" dur="1s" calcMode="spline" keySplines="0.3 0 0.7 1" begin="0s" fill="freeze"/>
+  <animate attributeName="height" values="0;180" dur="1s" calcMode="spline" keySplines="0.3 0 0.7 1" begin="0s" fill="freeze"/>
+</rect>
+<rect x="300" y="400" width="80" height="0" fill="var(--accent)">
+  <animate attributeName="y" values="400;140" dur="1s" calcMode="spline" keySplines="0.3 0 0.7 1" begin="0.15s" fill="freeze"/>
+  <animate attributeName="height" values="0;260" dur="1s" calcMode="spline" keySplines="0.3 0 0.7 1" begin="0.15s" fill="freeze"/>
+</rect>
+```
+
+`y` と `height` を同時に動かして「下端は固定のまま上に伸びる」形にするのが要点（`height` だけ動かすと上端が固定され下に伸びる誤った見た目になる）。棒ごとに `begin` を0.1〜0.2秒ずつずらすと「順番に確定していく」印象になる。`fill="freeze"` で最終状態を保持し、[data-graphics/references/charts.md](../../data-graphics/references/charts.md) の静止画テンプレートと数値・座標を揃える。
+
+## 複合シーン — パターンを重ねて1つのストーリーにする
+
+1シーンに1パターンだけで足りない場合は、**同じ「主役3〜4個以内」の制約を保ったまま**複数パターンを時間軸でつなぐ。例えば「27（結晶化）で断片が集まって輪郭ができる → 8（グロー）で結論の数字が光る」のように、`begin="前アニメーションのid.end"` で連結すると1本の物語になる。やってはいけないのは、複数の仕組み（収束と循環など）を**同時に**同じ画面で見せて主張を薄めること——時間差でつなぐのは良いが、同時多発は「作る前の3つの問い」の問1（1つの仕組みを説明しているか）に反する。
 
 ## reduced-motion対応（共通）
 
